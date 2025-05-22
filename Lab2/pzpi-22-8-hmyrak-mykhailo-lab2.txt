@@ -214,10 +214,10 @@
 
 
 
-Додаток А
-ВІДЕОЗАПИС
+     Додаток А
+	Хронологічний опис та посилання
 
-Відеозапис доповіді на YouTube: https://youtu.be/AsOfxoTlrG4
+	Відеозапис доповіді на YouTube: https://youtu.be/AsOfxoTlrG4
 
 Хронологічний опис доповіді:
 00:00 Вступна частина
@@ -263,24 +263,24 @@
 Додаток Б
 Графічні матеріали
 
-
-     Рисунок Б.1 - UML діаграма розгортання (Deployment Diagram)
-
-
-     Рисунок Б.2 –  UML діаграма прецедентів  (Use Case Diagram)
+     
+     Рисунок Б.1 – ER-діаграма даних
      
 
+     Рисунок Б.2 - UML діаграма розгортання (Deployment Diagram)
+
      
-     Рисунок Б.3 – ER-модель даних (Entity–Relationship Model)
      
+
+     Рисунок Б.3 — UML-діаграма прецедентів
+
      
      Рисунок Б.4 - UML діаграма взаємодії (Interaction Overview Diagram)
-     
      Додаток В
      Програмний код
      
-     В.1 Математична обробка прикладних даних
-     Репозиторій: https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab2/pzpi-22-8-hmyrak-mykhailo-lab2/API_NET6/StatsEndpoints.cs
+В.1 Математична обробка прикладних даних
+GitHub репозиторій: https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab2/pzpi-22-8-hmyrak-mykhailo-lab2/API_NET6/StatsEndpoints.cs
      
       01 public static void MapStatsEndpoints(this IEndpointRouteBuilder endpoints, libraryContext db)
       02 {
@@ -363,9 +363,61 @@
       79     }).RequireAuthorization(); // Authorization required
       80 }
       
-      
-     В.2 Наповнення бази даних необхідними даними при запуску додатка
-     Репозиторій: https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab2/pzpi-22-8-hmyrak-mykhailo-lab2/API_NET6/DatabaseVerifier.cs
+B.2 Адміністрування бізнес-логіки системи
+GitHub репозиторій:  https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab2/pzpi-22-8-hmyrak-mykhailo-lab2/API_NET6/UsersEndpoints.cs
+     
+      01 using Microsoft.AspNetCore.Builder;
+      02 using Microsoft.AspNetCore.Routing;
+      03 using API_NET6.Models;
+      04 using BCrypt.Net;
+      05 using Microsoft.EntityFrameworkCore;
+      06 using Microsoft.AspNetCore.Authorization;
+      07 
+      08 public static class UsersEndpoints
+      09 {
+      10     public static void MapUsersEndpoints(this IEndpointRouteBuilder endpoints, libraryContext db)
+      11     {
+      12         // Get list of users
+      13         endpoints.MapGet("/users", [Authorize(Roles = "Admin")] () => db.Users.ToList())
+      14             .RequireAuthorization();
+      15 
+      16         // Edit user
+      17         endpoints.MapPut("/users/{id}", [Authorize(Roles = "Admin")] (int id, User user) =>
+      18         {
+      19             var existingUser = db.Users.Find(id);
+      20             if (existingUser == null)
+      21             {
+      22                 return Results.NotFound();
+      23             }
+      24 
+      25             if (user.Login != null) existingUser.Login = user.Login;
+      26             if (user.Email != null) existingUser.Email = user.Email;
+      27             if (user.Role != null) existingUser.Role = user.Role;
+      28             if (user.PasswordHash != null) existingUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
+      29             existingUser.UpdatedAt = DateTime.UtcNow;
+      30 
+      31             db.SaveChanges();
+      32             return Results.Ok(existingUser);
+      33         }).RequireAuthorization();
+      34 
+      35         // Delete user
+      36         endpoints.MapDelete("/users/{id}", [Authorize(Roles = "Admin")] (int id) =>
+      37         {
+      38             var existingUser = db.Users.Find(id);
+      39             if (existingUser == null)
+      40             {
+      41                 return Results.NotFound();
+      42             }
+      43 
+      44             db.Users.Remove(existingUser);
+      45             db.SaveChanges();
+      46             return Results.NoContent();
+      47         }).RequireAuthorization();
+      48     }
+      49 }
+
+В.3 Наповнення бази даних необхідними даними при запуску додатка
+GitHub репозиторій:  https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab2/pzpi-22-8-hmyrak-mykhailo-lab2/API_NET6/DatabaseVerifier.cs
      
       1 public static class DatabaseVerifier
       2 {
@@ -439,6 +491,10 @@
       70    }
       71 
       72 }
+     
+     
+     
+     
      
      
      
