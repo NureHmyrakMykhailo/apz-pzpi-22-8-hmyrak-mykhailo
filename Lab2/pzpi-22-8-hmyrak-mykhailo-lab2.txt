@@ -279,8 +279,8 @@
      Додаток В
      Програмний код
      
-В.1 Математична обробка прикладних даних
-GitHub репозиторій: https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab2/pzpi-22-8-hmyrak-mykhailo-lab2/API_NET6/StatsEndpoints.cs
+B.1 Математична обробка прикладних даних
+GitHub репозиторій: https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab2/pzpi-22-8-hmyrak-mykhailo-lab2/API_NET6/StatsEndpoints.cs
      
       01 public static void MapStatsEndpoints(this IEndpointRouteBuilder endpoints, libraryContext db)
       02 {
@@ -364,7 +364,7 @@ GitHub репозиторій: https://github.com/NureHmyrakMykhailo/apz-pzpi-2
       80 }
       
 B.2 Адміністрування бізнес-логіки системи
-GitHub репозиторій:  https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab2/pzpi-22-8-hmyrak-mykhailo-lab2/API_NET6/UsersEndpoints.cs
+GitHub репозиторій: https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab2/pzpi-22-8-hmyrak-mykhailo-lab2/API_NET6/UsersEndpoints.cs
      
       01 using Microsoft.AspNetCore.Builder;
       02 using Microsoft.AspNetCore.Routing;
@@ -416,7 +416,7 @@ GitHub репозиторій:  https://github.com/NureHmyrakMykhailo/apz-pzpi-
       48     }
       49 }
 
-В.3 Наповнення бази даних необхідними даними при запуску додатка
+B.3 Наповнення бази даних необхідними даними при запуску додатка
 GitHub репозиторій:  https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab2/pzpi-22-8-hmyrak-mykhailo-lab2/API_NET6/DatabaseVerifier.cs
      
       1 public static class DatabaseVerifier
