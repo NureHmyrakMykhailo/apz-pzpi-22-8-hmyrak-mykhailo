@@ -1,0 +1,740 @@
+Міністерство освіти і науки України
+Харківський національний університет радіоелектроніки
+Кафедра програмної інженерії
+ 
+
+
+
+
+
+Лабораторна робота №3
+з дисципліни: «Архітектура програмного забезпечення»
+на тему «Розробка програмної архітектури, створення та відлагодження програмного коду веб-клієнта програмної системи»
+ 
+
+
+
+ 
+Виконав: 								
+ст. гр. ПЗПІ-22-8							
+Гмирак Михайло Дмитрович
+                                                					
+
+Перевірив:
+Ст. в. Сокорчук І. П. 
+
+
+
+
+Харків 2025
+1 ІСТОРІЯ ЗМІН
+Зміни в документі нотуються до таблиці 1.1.
+     
+     
+Таблиця 1.1 – Історія змін
+№
+Дата
+Версія звіту
+Опис змін та виправлень
+1
+26.05.25
+0.1
+Створено розділ «Історія змін»
+2
+26.05.25
+0.1
+Створено розділ «Завдання»
+3
+26.05.25
+0.1
+Створено розділ «Опис виконаної роботи»
+4
+26.05.25
+0.1
+Створено розділ «Висновки»
+5
+26.05.25
+0.1
+Додано додаток А з посиланням на відеоролик
+6
+26.05.25
+0.1
+Додано додаток Б з графічними матеріалами
+7
+26.05.25
+0.1
+Додано додаток В з програмним кодом
+       
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+
+2 ЗАВДАННЯ
+     
+     
+     У рамках виконання цієї лабораторної роботи треба було розробити веб частину для програмної системи для автоматизації роботи бібліотек. Необхідно проаналізувати та описати створені компоненти системи. Система дозволяє користувачам проходити аутентифікацію, після чого їхні права визначаються відповідно до ролі, що забезпечує безпечний доступ до різних розділів. Через зручний інтерфейс можна додавати, редагувати, видаляти та шукати книги, керувати екземплярами, а також вести облік читачів і користувачів. Всі дії синхронізуються з бекендом через REST API, а стан завантаження та помилки відображаються користувачу. Інтерфейс підтримує багатомовність, а також містить інформаційні панелі для швидкого аналізу роботи бібліотеки. Додатково реалізовано інтеграцію з сенсорами для моніторингу умов зберігання книжкового фонду.
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+3.1  Аутентифікація та авторизація
+     
+     
+     У системі реалізовано механізм аутентифікації користувачів із збереженням токена доступу у localStorage, що дозволяє підтримувати сесію навіть після оновлення сторінки. Після успішного входу користувача токен зберігається у браузері, і при кожному запиті до API він автоматично додається до заголовків, забезпечуючи захищений доступ до ресурсів.Система авторизації базується на ролях користувачів:  admin та user. В залежності від ролі визначаються доступні функції та розділи інтерфейсу:
+     - admin може керувати книгами, читачами, екземплярами, переглядати статистику, а такоож  має доступ до управління користувачами.
+     - user може керувати книгами, читачами, екземплярами, переглядати статистику, але не має доступу до управління користувачами.
+     Для захисту маршрутів реалізовано перевірку прав доступу перед завантаженням сторінки. Якщо користувач не має необхідних прав, він автоматично перенаправляється на сторінку входу або отримує повідомлення про відмову в доступі.
+     
+     
+3.2  Робота з даними
+     
+     
+     Вся взаємодія з даними організована через REST API, що реалізовано на бекенді. Дані про книги, читачів, екземпляри, користувачів, статистику та сенсори завантажуються асинхронно з відображенням стану завантаження, помилок та інформаційних повідомлень для користувача.Реалізовано повний набір CRUD-операцій (створення, читання, редагування, видалення) для основних сутностей:
+     - книги: додавання, редагування, видалення, пошук за назвою, перегляд пов’язаної інформації (автори, редактори, художники).
+     - читачі: реєстрація, редагування, видалення, пошук за ПІБ.
+     - екземпляри книг: додавання, видача читачу, повернення, перегляд історії руху.
+     - користувачі: створення, редагування, видалення (для адміністраторів).
+     - статистика: перегляд загальної статистики по бібліотеці, активності читачів, популярності книг.
+     - сенсори: перегляд даних з кліматичних сенсорів у бібліотеці.
+     Пошук і фільтрація реалізовані як на стороні клієнта (швидкий пошук у таблицях), так і через параметри до API (наприклад, пошук книг за назвою, читачів за ПІБ).
+     
+     
+     3.3 Локалізація (переклад)
+     
+     
+     Для міжнародної локалізації інтерфейсу підключено бібліотеку react-i18next. Всі текстові ресурси винесено до окремих файлів /locales/en/translation.json та /locales/ua/translation.json, що дозволяє легко додавати нові мови. Реалізовано перемикач мов у верхній панелі, який зберігає вибір користувача у localStorage для зручності подальшого користування. Всі елементи інтерфейсу, повідомлення, підказки та помилки відображаються українською та англійською мовою.
+     
+     
+     
+3.5  Додаткові функції
+     
+     Аналітика використання фонду:
+     - реалізовано розрахунок популярності книг та активності читачів на основі історії видачі.
+     - додано формулу для розрахунку "коефіцієнта використання" кожної книги (наприклад, кількість видач за місяць).
+     - вивід  у вигляді  відсотка  або графіка, який можна використовувати для аналітики у інтерфейсі.
+     Моніторинг клімату:
+     - Вивід даних з сенсорів температури та вологості у реальному часі.
+     - Відображення попереджень при виході параметрів за межі норми.
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+4 ВИСНОВКИ
+     
+     
+     У результаті виконання лабораторної роботи було створено базову версію веб-інтерфейсу адміністративної панелі для системи автоматизації бібліотек. Основна увага приділялася створенню функціонального, безпечного та інтуїтивно зрозумілого інтерфейсу для адміністраторів та співробітників бібліотеки. Було впроваджено повноцінну систему аутентифікації та авторизації, яка включає зберігання токена сесії, перевірку прав доступу та розмежування ролей користувачів (admin, user). Це забезпечує надійний контроль доступу до різних розділів бібліотечної системи та захищає дані від несанкціонованого доступу.
+     Веб-інтерфейс організовує отримання, фільтрацію та редагування даних через REST API, що дозволяє ефективно управляти основними об’єктами бібліотеки. Реалізовано CRUD-операції для книг, читачів, екземплярів книг, персон пов’язаних з книгою  та користувачів. Додатково впроваджено функції пошуку та фільтрації для книг, читачів іперсон, що значно спрощує роботу з великими обсягами інформації та підвищує зручність користування системою.
+     Завдяки використанню бібліотеки react-i18next забезпечено повноцінну підтримку локалізації інтерфейсу. Реалізовано перемикач мов, збереження вибраних налаштувань та окремі файли перекладів для української та англійської мов, що робить систему доступною для ширшого кола користувачів.
+     Модуль статистики надає актуальну інформацію про кількість книг, читачів, виданих екземплярів та останні зміни у системі, що дозволяє адміністрації оперативно контролювати стан бібліотеки.
+     Додатково реалізовано інтеграцію з сенсорами для моніторингу кліматичних умов у бібліотеці, що є важливим для збереження книжкового фонду. Завдяки цим можливостям система є практично цінною як для невеликих бібліотек, так і для великих установ.
+
+
+ДОДАТОК А
+Відеозапис
+     
+Відеозапис презентації результатів лабораторної роботи: https://youtu.be/sVC_IfIvon0
+
+Хронологічний опис відеозапису:
+     00:00 Вступна частина
+     На початку відео коротко представлено мету лабораторної роботи.
+     00:36 Тестування: реєстрація/авторизація
+     Демонструється процес реєстрації нового користувача та подальша авторизація у системі, що підтверджує коректність роботи механізму аутентифікації.
+     01:12 Головна сторінка
+     Після входу користувач потрапляє на головну сторінку, де відображаються основні інформаційні блоки та статистика бібліотеки.
+     01:37 Тестування: взаємодія з таблицею "Книги"
+     Показано, як користувач може переглядати, шукати, додавати, редагувати та видаляти книги у відповідному розділі.
+     03:08 Тестування: взаємодія з таблицею "Читачи"
+     Демонструється робота з таблицею читачів: перегляд списку, пошук, додавання, редагування та видалення записів.
+     03:45 Отримання статистики бібліотеки
+     Відкривається сторінка статистики, де користувач може переглянути актуальні дані щодо кількості книг, читачів, виданих екземплярів та інших показників.
+     04:16 Перегляд показників з датчиків температури та вологості
+     Показано, як система відображає дані з підключених сенсорів температури та вологості для моніторингу умов зберігання книжкового фонду.
+     04:52 Додавання екземплярів книги, видача та повернення екземпляра книги
+     Демонструється процес додавання нових екземплярів книги, а також операції видачі книги читачу та повернення її до бібліотеки.
+     06:12 Локалізація, переклад сторінок
+     Показано можливість перемикання мови інтерфейсу, а також коректне відображення перекладів на всіх сторінках системи.
+     06:36 Адміністрування бібліотеки
+     Демонструється розділ для адміністраторів, де можна керувати користувачами, призначати ролі та контролювати доступ до різних функцій.
+     07:21 Завершення
+     Подяка за перегляд та завершення відео.
+      
+
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+
+ДОДАТОК Б
+Графічні матеріали
+     
+
+Рисунок Б.1 – UML діаграма прецедентів
+     
+
+Рисунок Б.2 – UML діаграма компонентів
+     
+     
+Рисунок Б.3 – UML діаграма взаємодії
+     
+     
+Рисунок Б.4 – UML діаграма діяльності
+     
+     
+     
+     
+     
+
+ДОДАТОК В
+Програмний код
+
+В.1 Реєстрація
+GitHub репозиторій: https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab3/pzpi-22-8-hmyrak-mykhailo-lab3/src/pages/Register.tsx
+     
+      1  import React, { useState } from 'react';
+      2  import { useNavigate, Link as RouterLink } from 'react-router-dom';
+      3  import {
+      4    Container,
+      5    Box,
+      6    Typography,
+      7    TextField,
+      8    Button,
+      9    Link,
+      10   Paper,
+      11   Alert,
+      12  } from '@mui/material';
+      13  import { useAuth } from '../contexts/AuthContext';
+      14  
+      15  const Register: React.FC = () => {
+      16    const navigate = useNavigate();
+      17    const { register } = useAuth();
+      18    const [formData, setFormData] = useState({
+      19      username: '',
+      20      email: '',
+      21      password: '',
+      22      confirmPassword: '',
+      23    });
+      24    const [error, setError] = useState('');
+      25    const [loading, setLoading] = useState(false);
+      26  
+      27    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      28      const { name, value } = e.target;
+      29      setFormData((prev) => ({
+      30        ...prev,
+      31        [name]: value,
+      32      }));
+      33    };
+      34  
+      35    const validateForm = () => {
+      36      if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
+      37        setError('All fields are required');
+      38        return false;
+      39      }
+      40      if (formData.password !== formData.confirmPassword) {
+      41        setError('Passwords do not match');
+      42        return false;
+      43      }
+      44      if (formData.password.length < 6) {
+      45        setError('Password must be at least 6 characters long');
+      46        return false;
+      47      }
+      48      if (!formData.email.includes('@')) {
+      49        setError('Invalid email address');
+      50        return false;
+      51      }
+      52      return true;
+      53    };
+      54  
+      55    const handleSubmit = async (e: React.FormEvent) => {
+      56      e.preventDefault();
+      57      setError('');
+      58  
+      59      if (!validateForm()) {
+      60        return;
+      61      }
+      62  
+      63      setLoading(true);
+      64  
+      65      try {
+      66        await register(formData.username, formData.password, formData.email);
+      67        navigate('/login');
+      68      } catch (err) {
+      69        setError('Registration failed. Please try again.');
+      70      } finally {
+      71        setLoading(false);
+      72      }
+      73    };
+      74  
+      75    return (
+      76      <Container component="main" maxWidth="xs">
+      77        <Box
+      78          sx={{
+      79            marginTop: 8,
+      80            display: 'flex',
+      81            flexDirection: 'column',
+      82            alignItems: 'center',
+      83          }}
+      84        >
+      85          <Paper
+      86            elevation={3}
+      87            sx={{
+      88              padding: 4,
+      89              display: 'flex',
+      90              flexDirection: 'column',
+      91              alignItems: 'center',
+      92              width: '100%',
+      93            }}
+      94          >
+      95            <Typography component="h1" variant="h5">
+      96              Create Account
+      97            </Typography>
+      98            {error && (
+      99              <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
+      100               {error}
+      101             </Alert>
+      102           )}
+      103           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
+      104             <TextField
+      105               margin="normal"
+      106               required
+      107               fullWidth
+      108               id="username"
+      109               label="Username"
+      110               name="username"
+      111               autoComplete="username"
+      112               autoFocus
+      113               value={formData.username}
+      114               onChange={handleChange}
+      115             />
+      116             <TextField
+      117               margin="normal"
+      118               required
+      119               fullWidth
+      120               id="email"
+      121               label="Email Address"
+      122               name="email"
+      123               autoComplete="email"
+      124               value={formData.email}
+      125               onChange={handleChange}
+      126             />
+      127             <TextField
+      128               margin="normal"
+      129               required
+      130               fullWidth
+      131               name="password"
+      132               label="Password"
+      133               type="password"
+      134               id="password"
+      135               autoComplete="new-password"
+      136               value={formData.password}
+      137               onChange={handleChange}
+      138             />
+      139             <TextField
+      140               margin="normal"
+      141               required
+      142               fullWidth
+      143               name="confirmPassword"
+      144               label="Confirm Password"
+      145               type="password"
+      146               id="confirmPassword"
+      147               value={formData.confirmPassword}
+      148               onChange={handleChange}
+      149             />
+      150             <Button
+      151               type="submit"
+      152               fullWidth
+      153               variant="contained"
+      154               sx={{ mt: 3, mb: 2 }}
+      155               disabled={loading}
+      156             >
+      157               {loading ? 'Creating Account...' : 'Sign Up'}
+      158             </Button>
+      159             <Box sx={{ textAlign: 'center' }}>
+      160               <Link component={RouterLink} to="/login" variant="body2">
+      161                 {'Already have an account? Sign In'}
+      162               </Link>
+      163             </Box>
+      164           </Box>
+      165         </Paper>
+      166       </Box>
+      167     </Container>
+      168   );
+      169 };
+      170 
+      171 export default Register;
+     
+В.2 Авторизація
+GitHub репозиторій: https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab3/pzpi-22-8-hmyrak-mykhailo-lab3/src/pages/Login.tsx
+     
+      1 import React, { useState } from 'react';
+      2 import { useNavigate, Link as RouterLink } from 'react-router-dom';
+      3 import {
+      4   Container,
+      5   Box,
+      6   Typography,
+      7   TextField,
+      8   Button,
+      9   Link,
+      10  Paper,
+      11  Alert,
+      12 } from '@mui/material';
+      13 import { useAuth } from '../contexts/AuthContext';
+      14 
+      15 const Login: React.FC = () => {
+      16   const navigate = useNavigate();
+      17   const { login } = useAuth();
+      18   const [username, setUsername] = useState('');
+      19   const [password, setPassword] = useState('');
+      20   const [error, setError] = useState('');
+      21   const [loading, setLoading] = useState(false);
+      22 
+      23   const handleSubmit = async (e: React.FormEvent) => {
+      24     e.preventDefault();
+      25     setError('');
+      26     setLoading(true);
+      27 
+      28     try {
+      29       await login(username, password);
+      30       navigate('/');
+      31     } catch (err) {
+      32       setError('Invalid username or password');
+      33     } finally {
+      34       setLoading(false);
+      35     }
+      36   };
+      37 
+      38   return (
+      39     <Container component="main" maxWidth="xs">
+      40       <Box
+      41         sx={{
+      42           marginTop: 8,
+      43           display: 'flex',
+      44           flexDirection: 'column',
+      45           alignItems: 'center',
+      46         }}
+      47       >
+      48         <Paper
+      49           elevation={3}
+      50           sx={{
+      51             padding: 4,
+      52             display: 'flex',
+      53             flexDirection: 'column',
+      54             alignItems: 'center',
+      55             width: '100%',
+      56           }}
+      57         >
+      58           <Typography component="h1" variant="h5">
+      59             Library System Login
+      60           </Typography>
+      61           {error && (
+      62             <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
+      63               {error}
+      64             </Alert>
+      65           )}
+      66           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
+      67             <TextField
+      68               margin="normal"
+      69               required
+      70               fullWidth
+      71               id="username"
+      72               label="Username"
+      73               name="username"
+      74               autoComplete="username"
+      75               autoFocus
+      76               value={username}
+      77               onChange={(e) => setUsername(e.target.value)}
+      78             />
+      79             <TextField
+      80               margin="normal"
+      81               required
+      82               fullWidth
+      83               name="password"
+      84               label="Password"
+      85               type="password"
+      86               id="password"
+      87               autoComplete="current-password"
+      88               value={password}
+      89               onChange={(e) => setPassword(e.target.value)}
+      90             />
+      91             <Button
+      92               type="submit"
+      93               fullWidth
+      94               variant="contained"
+      95               sx={{ mt: 3, mb: 2 }}
+      96               disabled={loading}
+      97             >
+      98               {loading ? 'Signing in...' : 'Sign In'}
+      99             </Button>
+      100            <Box sx={{ textAlign: 'center' }}>
+      101              <Link component={RouterLink} to="/register" variant="body2">
+      102                {"Don't have an account? Sign Up"}
+      103              </Link>
+      104            </Box>
+      105          </Box>
+      106        </Paper>
+      107      </Box>
+      108    </Container>
+      109  );
+      110 };
+      111 
+      112 export default Login;
+     
+     
+     
+     
+В.3 Головна сторінка
+GitHub репозиторій: https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab3/pzpi-22-8-hmyrak-mykhailo-lab3/src/pages/Dashboard.tsx
+     
+      1 import React from 'react';
+      2 import { useQuery } from '@tanstack/react-query';
+      3 import {
+      4   Paper,
+      5   Typography,
+      6   Box,
+      7   Card,
+      8   CardContent,
+      9   CircularProgress,
+      10  Button,
+      11 } from '@mui/material';
+      12 import {
+      13   Book as BookIcon,
+      14   People as PeopleIcon,
+      15   Inventory as InventoryIcon,
+      16   BarChart as BarChartIcon,
+      17 } from '@mui/icons-material';
+      18 import axios from 'axios';
+      19 import { useTranslation } from 'react-i18next';
+      20 import { useNavigate } from 'react-router-dom';
+      21 
+      22 interface Stats {
+      23   bookTitlesCount: number;
+      24   bookItemsCount: number;
+      25   itemsOnLoanCount: number;
+      26   availableItemsCount: number;
+      27   specialStorageCount: number;
+      28   readersCount: number;
+      29   activeReadersCount: number;
+      30   popularBookTitlesCount: number;
+      31   averageReadingTime: number;
+      32   maxReadingTime: number;
+      33 }
+      34 
+      35 const StatCard: React.FC<{
+      36   title: string;
+      37   value: number;
+      38   icon: React.ReactNode;
+      39   color: string;
+      40 }> = ({ title, value, icon, color }) => (
+      41   <Card sx={{ height: '100%', minWidth: 200, flex: '1 1 200px' }}>
+      42     <CardContent>
+      43       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+      44         <Box
+      45           sx={{
+      46             backgroundColor: `${color}20`,
+      47             borderRadius: '50%',
+      48             p: 1,
+      49             mr: 2,
+      50             display: 'flex',
+      51             alignItems: 'center',
+      52           }}
+      53         >
+      54           {icon}
+      55         </Box>
+      56         <Typography variant="h6" component="div">
+      57           {title}
+      58         </Typography>
+      59       </Box>
+      60       <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
+      61         {value.toLocaleString()}
+      62       </Typography>
+      63     </CardContent>
+      64   </Card>
+      65 );
+      66 
+      67 const Dashboard: React.FC = () => {
+      68   const { t } = useTranslation();
+      69   const navigate = useNavigate();
+      70 
+      71   const { data: stats, isLoading, error } = useQuery<Stats>({
+      72     queryKey: ['stats'],
+      73     queryFn: async () => {
+      74       const response = await axios.get('/stat');
+      75       return response.data;
+      76     },
+      77   });
+      78 
+      79   if (isLoading) {
+      80     return (
+      81       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+      82         <CircularProgress />
+      83       </Box>
+      84     );
+      85   }
+      86 
+      87   if (error) {
+      88     return (
+      89       <Box sx={{ mt: 4 }}>
+      90         <Typography color="error" align="center">
+      91           {t('errorLoadingStatistics')}
+      92         </Typography>
+      93       </Box>
+      94     );
+      95   }
+      96 
+      97   if (!stats) return null;
+      98 
+      99   return (
+      100     <Box>
+      101       <Typography variant="h4" gutterBottom>
+      102         {t('dashboard')}
+      103       </Typography>
+      104       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
+      105         <StatCard
+      106           title={t('totalBooks')}
+      107           value={stats.bookTitlesCount}
+      108           icon={<BookIcon sx={{ color: '#1976d2' }} />}
+      109           color="#1976d2"
+      110         />
+      111         <StatCard
+      112           title={t('totalItems')}
+      113           value={stats.bookItemsCount}
+      114           icon={<InventoryIcon sx={{ color: '#2e7d32' }} />}
+      115           color="#2e7d32"
+      116         />
+      117         <StatCard
+      118           title={t('activeReaders')}
+      119           value={stats.activeReadersCount}
+      120           icon={<PeopleIcon sx={{ color: '#ed6c02' }} />}
+      121           color="#ed6c02"
+      122         />
+      123         <StatCard
+      124           title={t('availableItems')}
+      125           value={stats.availableItemsCount}
+      126           icon={<BarChartIcon sx={{ color: '#9c27b0' }} />}
+      127           color="#9c27b0"
+      128         />
+      129       </Box>
+      130 
+      131       <Paper sx={{ p: 3, mb: 3 }}>
+      132         <Typography variant="h6" gutterBottom>
+      133           {t('additionalStatistics')}
+      134         </Typography>
+      135         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+      136           <Box>
+      137             <Typography variant="subtitle2" color="text.secondary">
+      138               {t('itemsOnLoan')}
+      139             </Typography>
+      140             <Typography variant="h6">{stats.itemsOnLoanCount}</Typography>
+      141           </Box>
+      142           <Box>
+      143             <Typography variant="subtitle2" color="text.secondary">
+      144               {t('specialStorage')}
+      145             </Typography>
+      146             <Typography variant="h6">{stats.specialStorageCount}</Typography>
+      147           </Box>
+      148           <Box>
+      149             <Typography variant="subtitle2" color="text.secondary">
+      150               {t('totalReaders')}
+      151             </Typography>
+      152             <Typography variant="h6">{stats.readersCount}</Typography>
+      153           </Box>
+      154           <Box>
+      155             <Typography variant="subtitle2" color="text.secondary">
+      156               {t('popularBooks')}
+      157             </Typography>
+      158             <Typography variant="h6">{stats.popularBookTitlesCount}</Typography>
+      159           </Box>
+      160         </Box>
+      161       </Paper>
+      162 
+      163       <Paper sx={{ p: 3 }}>
+      164         <Typography variant="h6" gutterBottom>
+      165           {t('readingStatistics')}
+      166         </Typography>
+      167         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+      168           <Box>
+      169             <Typography variant="subtitle2" color="text.secondary">
+      170               {t('averageReadingTime')}
+      171             </Typography>
+      172             <Typography variant="h6">
+      173               {Math.round(stats.averageReadingTime)} {t('minutes')}
+      174             </Typography>
+      175           </Box>
+      176           <Box>
+      177             <Typography variant="subtitle2" color="text.secondary">
+      178               {t('maxReadingTime')}
+      179             </Typography>
+      180             <Typography variant="h6">
+      181               {Math.round(stats.maxReadingTime)} {t('minutes')}
+      182             </Typography>
+      183           </Box>
+      184         </Box>
+      185       </Paper>
+      186 
+      187       <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
+      188         <Button
+      189           variant="contained"
+      190           color="primary"
+      191           onClick={() => navigate('/books')}
+      192         >
+      193           {t('addBook')}
+      194         </Button>
+      195         <Button
+      196           variant="contained"
+      197           color="primary"
+      198           onClick={() => navigate('/readers')}
+      199         >
+      200           {t('addReader')}
+      201         </Button>
+      202       </Box>
+      203     </Box>
+      204   );
+      205 };
+      206 
+      207 export default Dashboard;
+2
+
+
