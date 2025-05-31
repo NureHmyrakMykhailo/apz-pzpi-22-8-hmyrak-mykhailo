@@ -1,0 +1,616 @@
+Міністерство освіти і науки України
+Харківський національний університет радіоелектроніки
+Кафедра програмної інженерії
+ 
+
+
+
+
+
+Лабораторна робота №4
+з дисципліни: «Архітектура програмного забезпечення»
+на тему «Розробка програмної архітектури та створення і відлагодження програмного коду програмного застосунку мобільного пристрою для програмної системи»
+ 
+
+
+
+ 
+Виконав: 								
+ст. гр. ПЗПІ-22-8							
+Гмирак Михайло Дмитрович
+                                                					
+Перевірив:
+Ст. в. Сокорчук І. П. 
+
+
+
+
+Харків 2025
+     1 ІСТОРІЯ ЗМІН
+     Зміни в документі нотуються до таблиці 1.1.
+     
+     
+     Таблиця 1.1 – Історія змін
+№
+Дата
+Версія звіту
+Опис змін та виправлень
+1
+31.05.25
+0.1
+Створено розділ «Історія змін»
+2
+31.05.25
+0.1
+Створено розділ «Завдання»
+3
+31.05.25
+0.1
+Створено розділ «Опис виконаної роботи»
+4
+31.05.25
+0.1
+Створено розділ «Висновки»
+5
+31.05.25
+0.1
+Додано додаток А з посиланням на відеоролик
+6
+31.05.25
+0.1
+Додано додаток Б з графічними матеріалами
+7
+31.05.25
+0.1
+Додано додаток В з програмним кодом
+       
+     
+     
+
+2 ЗАВДАННЯ
+     
+     
+     Мета завдання – розробити частину системи, яка забезпечує підтримку роботи клієнтів на мобільній платформі Android. Програмний застосунок повинен мати зручний інтерфейс з необхідним функціоналом для користувача. Це включає доступ до книг, сортування, фільтрування, пошук, додавання, редагування, видалення а також видача та повернення існуючих книг та отримання статистики.
+     
+     
+     
+     
+ 
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+     
+     
+     Мобільний застосунок бібліотеки побудовано за сучасною архітектурою з використанням Jetpack Compose та механізму навігації через NavController. Усе UI-представлення реалізоване як набір Composable-функцій (екрани-скріни), кожен з яких відповідає окремому функціональному розділу (книги, читачі, персоналії, статистика). Опишемо ключові шари.
+     UI-шар:
+     - екрани-вкладки реалізовані як Composable-функції (BooksScreen, ReadersScreen, PeopleScreen, StatsScreen)
+     -   візуальні компоненти від Jetpack Compose (карточки, кнопки, текстові поля, тощо)
+     -   управління станом здійснюється через `remember` і Compose State API
+     -   навігація між екранами реалізована через NavController, який дозволяє перейти до того чи іншого екрану відповідно до маршруту
+      Мережевий шар:
+     - використані бібліотеки Retrofit та Gson для обміну з серверним REST-API
+     - кожен сервіс описано як інтерфейс Retrofit
+     - усі запити до серверу (GET/POST/PUT/DELETE) описані через методи з відповідними анотаціями
+     - використано Kotlin Coroutines для асинхронних операцій
+      Локальне сховище:
+     -  використовується для зберігання токену автентифікації
+     -  реалізовано через SharedPreferences
+     - токен зберігається після успішного входу та використовується при подальших запитах до API
+      Основні технології:
+     - мова програмування Kotlin
+     - jetpack Compose (Android UI Toolkit)
+     - navigation Component для Compose
+     - retrofit + Gson
+     - kotlin Coroutines
+     - android SDK
+     - material3 (Material Design Components)
+     Застосунок працює як клієнтська частина єдиної бібліотечної системи, надаючи можливість кінцевому користувачеві взаємодіяти з бізнес-процесами через REST-API. До бізнес-логіки належать такі операції як аутентифікація та реєстрація користувачів, управління книгами, читачами та персонами, а також перегляд статистики.
+     BooksScreen відображає книги у вигляді карток, що містять основну інформацію про книгу: назву, ISBN, кількість сторінок, рік видання, мову та класифікацію. Кожна картка має кнопки для редагування та видалення книги. При натисканні на картку відкривається BookItemsScreen, який показує інформацію про конкретні екземпляри книги, їх статус та історію використання. На екрані BookItemsScreen реалізовано повноцінну систему управління видачею та поверненням книг. Для кожного екземпляра книги відображається його статус (доступний, виданий) та історія використання. При видачі книги система перевіряє наступні умови: чи є книга доступною, чи не має читач заборгованостей, чи не перевищено ліміт виданих книг. Процес видачі включає вибір читача зі списку, встановлення дати видачі та планової дати повернення. При поверненні книги система перевіряє фактичну дату повернення та оновлює  статус екземпляра. Кожна операція видачі/повернення фіксується в системі з детальною інформацією про екземпляр книги, читача, дати та статус операції. 
+     ReadersScreen відображає список читачів бібліотеки. Кожна картка читача містить особисті дані, контактну інформацію та історію позичень. При додаванні нового читача через AddReaderScreen виконується валідація введених даних, включаючи перевірку формату електронної пошти та номера телефону.
+     PeopleScreen показує список персоналій (авторів, перекладачів, редакторів) у форматі карток. Кожна картка містить ім'я, дати життя, країну походження та інформацію про те, чи є персона реальною історичною особою. При додаванні нової персоналії через AddPersonScreen передбачено вибір дати народження та смерті з відповідною валідацією.
+     StatsScreen відображає статистику бібліотеки, включаючи загальну кількість книг, читачів, активних позичень та інші ключові показники. Дані оновлюються в реальному часі через API.
+     На головній сторінці (MainActivity) реалізована навігація через нижнє меню з чотирма основними розділами: книги, читачі, персоналії та статистика. Кожен розділ має власний екран з відповідним функціоналом.
+     Аутентифікація реалізована через AuthScreen, де користувач вводить логін та пароль. Після успішного входу токен зберігається в SharedPreferences та використовується для всіх подальших запитів до API. Реєстрація нових користувачів відбувається через RegisterScreen, де передбачено валідацію введених даних.
+     Мобільний клієнт взаємодіє з бекенд-сервісом через Retrofit. Усі запити відправляються до єдиного серверного домену, а відповіді JSON автоматично конвертуються в Kotlin-об'єкти через Gson. Для асинхронних операцій використовуються Kotlin Coroutines.
+     У проєкті реалізовано підтримку двох мов (українська та англійська) через стандартний механізм Android String Resources. Усі текстові елементи отримуються через stringResource, що дозволяє легко додавати нові мови. Для форматування дат використовується SimpleDateFormat з локаллю Locale.getDefault(), що забезпечує відображення дат відповідно до регіональних налаштувань користувача.
+     Для кожної сутності (книги, читачі, персоналії) передбачено можливість фільтрації та сортування. Фільтрація здійснюється через текстове поле пошуку, а сортування - через перемикач Asc/Desc. Ці налаштування діють лише у поточній сесії та не зберігаються між запусками застосунку.
+     Безпека даних забезпечується через систему ролей на сервері. Кожен запит на модифікацію даних (додавання, редагування, видалення) вимагає передачі токену автентифікації. Сервер перевіряє права доступу користувача перед виконанням операції. Якщо користувач не має достатніх прав, сервер повертає відповідну помилку.
+     
+     
+
+4 ВИСНОВКИ
+     
+     
+     У результаті створено мобільний застосунок бібліотечної системи на Kotlin із Jetpack Compose, який у межах однієї активності використовує NavController для навігації між екранами (логін, реєстрація, книги, читачі, персоналії, статистика). Для обміну з бекендом застосовано Retrofit із Gson і Kotlin Coroutines, що забезпечує CRUD-операції над сутностями Book, Reader, Person та BookItem. Після входу токен автентифікації зберігається в SharedPreferences і передається до кожного запиту як маркер прав доступу.
+
+
+
+ДОДАТОК А
+Відеозапис
+
+Відеозапис презентації результатів лабораторної роботи: https://youtu.be/OqktRWuTwTQ
+
+     Хронологічний опис відеозапису:
+     00:00 Вступна частина
+     На початку відео коротко представлено мету лабораторної роботи.
+     00:31 Тестування: реєстрація/авторизація
+     Демонструється процес реєстрації нового користувача та подальша авторизація у системі, що підтверджує коректність роботи механізму аутентифікації.
+     01:56 Тестування: взаємодія з таблицею "Книги"
+     Показано, як користувач може переглядати, шукати, додавати, редагувати та видаляти книги у відповідному розділі.
+     04:01 Тестування: взаємодія з таблицею "Читачи"
+     Демонструється робота з таблицею читачів: перегляд списку, пошук, додавання, редагування та видалення записів.
+     05:11 Тестування: взаємодія з таблицею "Персони"
+     Демонструється робота з таблицею персон: перегляд списку, пошук, додавання, редагування та видалення записів.
+     05:34 Отримання статистики бібліотеки
+     Відкривається сторінка статистики, де користувач може переглянути актуальні дані щодо кількості книг, читачів, виданих екземплярів та інших показників.
+     06:33 Додавання екземплярів книги, видача та повернення екземпляра книги
+     Демонструється процес додавання нових екземплярів книги, а також операції видачі книги читачу та повернення її до бібліотеки.
+     08:05 Локалізація, переклад сторінок
+     Показано можливість перемикання мови інтерфейсу, а також коректне відображення перекладів на всіх сторінках системи.
+     08:41 Завершення
+     Подяка за перегляд та завершення відео.
+      
+     
+    
+ДОДАТОК Б
+Графічні матеріали
+     
+
+Рисунок Б.1 - UML діаграма прецедентів
+
+Рисунок Б.1 - UML діаграма компонентів
+
+     
+Рисунок Б.3 – UML діаграма взаємодії
+     
+
+Рисунок Б.4 – UML діаграма діяльності
+     
+
+
+ДОДАТОК В
+Програмний код
+     
+     
+     В.1 Авторизація 
+     GitHub репозиторій: https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab4/pzpi-22-8-hmyrak-mykhailo-lab4/app/src/main/java/com/example/apz_library/AuthActivity.kt
+     
+1  package com.example.apz_library
+2  
+3  import android.content.Intent
+4  import android.os.Bundle
+5  import androidx.activity.ComponentActivity
+6  import androidx.activity.compose.setContent
+7  import androidx.compose.runtime.*
+8  import androidx.compose.material3.MaterialTheme
+9  import androidx.lifecycle.viewmodel.compose.viewModel
+10 import com.example.apz_library.ui.auth.AuthScreen
+11 import com.example.apz_library.ui.auth.AuthViewModel
+12 
+13 class AuthActivity : ComponentActivity() {
+14     override fun onCreate(savedInstanceState: Bundle?) {
+15         super.onCreate(savedInstanceState)
+16         setContent {
+17             MaterialTheme {
+18                 var showRegister by remember { mutableStateOf(false) }
+19                 var username by remember { mutableStateOf("") }
+20                 var password by remember { mutableStateOf("") }
+21                 var error by remember { mutableStateOf<String?>(null) }
+22                 var isLoading by remember { mutableStateOf(false) }
+23                 val viewModel: AuthViewModel = viewModel()
+24 
+25                 if (showRegister) {
+26                     RegisterScreen(
+27                         onRegisterSuccess = { showRegister = false },
+28                         onBack = { showRegister = false }
+29                     )
+30                 } else {
+31                     AuthScreen(
+32                         username = username,
+33                         password = password,
+34                         onUsernameChange = { username = it },
+35                         onPasswordChange = { password = it },
+36                         onLogin = {
+37                             isLoading = true
+38                             error = null
+39                             viewModel.login(username, password) { success, tokenOrError ->
+40                                 isLoading = false
+41                                 if (success) {
+42                                     // Перехід на головний екран з токеном
+43                                     val intent = Intent(this@AuthActivity, MainActivity::class.java)
+44                                     intent.putExtra("token", tokenOrError)
+45                                     startActivity(intent)
+46                                     finish()
+47                                 } else {
+48                                     error = tokenOrError
+49                                 }
+50                             }
+51                         },
+52                         onRegister = { showRegister = true },
+53                         isLoading = isLoading,
+54                         error = error
+55                     )
+56                 }
+57             }
+58         }
+59     }
+60 }
+
+     В.2 Реєстрація
+     GitHub репозиторій: https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab4/pzpi-22-8-hmyrak-mykhailo-lab4/app/src/main/java/com/example/apz_library/RegisterScreen.kt
+
+1  package com.example.apz_library
+2  
+3  import android.content.Intent
+4  import androidx.compose.foundation.layout.*
+5  import androidx.compose.material3.*
+6  import androidx.compose.runtime.*
+7  import androidx.compose.ui.Alignment
+8  import androidx.compose.ui.Modifier
+9  import androidx.compose.ui.graphics.Color
+10 import androidx.compose.ui.platform.LocalContext
+11 import androidx.compose.ui.text.input.PasswordVisualTransformation
+12 import androidx.compose.ui.unit.dp
+13 import androidx.lifecycle.viewmodel.compose.viewModel
+14 import com.example.apz_library.ui.auth.AuthViewModel
+15 
+16 @OptIn(ExperimentalMaterial3Api::class)
+17 @Composable
+18 fun RegisterScreen(onRegisterSuccess: () -> Unit, onBack: () -> Unit) {
+19     val viewModel: AuthViewModel = viewModel()
+20     var username by remember { mutableStateOf("") }
+21     var email by remember { mutableStateOf("") }
+22     var password by remember { mutableStateOf("") }
+23     var error by remember { mutableStateOf<String?>(null) }
+24     var isLoading by remember { mutableStateOf(false) }
+25 
+26     Column(
+27         modifier = Modifier
+28             .fillMaxSize()
+29             .padding(16.dp),
+30         horizontalAlignment = Alignment.CenterHorizontally,
+31         verticalArrangement = Arrangement.Center
+32     ) {
+33         Text(
+34             text = "Реєстрація",
+35             style = MaterialTheme.typography.headlineMedium,
+36             modifier = Modifier.padding(bottom = 32.dp)
+37         )
+38 
+39         OutlinedTextField(
+40             value = username,
+41             onValueChange = { username = it },
+42             label = { Text("Ім'я користувача") },
+43             modifier = Modifier
+44                 .fillMaxWidth()
+45                 .padding(bottom = 8.dp)
+46         )
+47 
+48         OutlinedTextField(
+49             value = email,
+50             onValueChange = { email = it },
+51             label = { Text("Email") },
+52             modifier = Modifier
+53                 .fillMaxWidth()
+54                 .padding(bottom = 8.dp)
+55         )
+56 
+57         OutlinedTextField(
+58             value = password,
+59             onValueChange = { password = it },
+60             label = { Text("Пароль") },
+61             visualTransformation = PasswordVisualTransformation(),
+62             modifier = Modifier
+63                 .fillMaxWidth()
+64                 .padding(bottom = 16.dp)
+65         )
+66 
+67         Button(
+68             onClick = {
+69                 error = null
+70                 if (username.isNotEmpty() && password.isNotEmpty() && email.isNotEmpty()) {
+71                     isLoading = true
+72                     viewModel.register(username, password, email) { success, message ->
+73                         isLoading = false
+74                         if (success) {
+75                             onRegisterSuccess()
+76                         } else {
+77                             error = message
+78                         }
+79                     }
+80                 } else {
+81                     error = "Введіть ім'я користувача, email і пароль"
+82                 }
+83             },
+84             modifier = Modifier
+85                 .fillMaxWidth()
+86                 .padding(bottom = 8.dp),
+87             enabled = !isLoading
+88         ) {
+89             Text("Зареєструватися")
+90         }
+91 
+92         OutlinedButton(
+93             onClick = { onBack() },
+94             modifier = Modifier.fillMaxWidth()
+95         ) {
+96             Text("Назад")
+97         }
+98 
+99         if (isLoading) {
+100             CircularProgressIndicator(
+101                 modifier = Modifier.padding(16.dp)
+102             )
+103         }
+104 
+105         error?.let {
+106             Text(
+107                 text = it,
+108                 color = Color.Red,
+109                 modifier = Modifier.padding(8.dp)
+110             )
+111         }
+112     }
+113 }
+
+     В.4 Сторінка “Книги”
+     GitHub репозиторій: https://github.com/NureHmyrakMykhailo/apz-pzpi-22-8-hmyrak-mykhailo/blob/main/Lab4/pzpi-22-8-hmyrak-mykhailo-lab4/app/src/main/java/com/example/apz_library/BooksScreen.kt
+
+ 1  package com.example.apz_library
+ 2  
+ 3  import androidx.compose.animation.AnimatedVisibility
+ 4  import androidx.compose.foundation.background
+ 5  import androidx.compose.foundation.layout.*
+ 6  import androidx.compose.foundation.lazy.LazyColumn
+ 7  import androidx.compose.foundation.lazy.items
+ 8  import androidx.compose.foundation.shape.RoundedCornerShape
+ 9  import androidx.compose.material.icons.Icons
+10  import androidx.compose.material.icons.filled.Add
+11  import androidx.compose.material.icons.filled.Delete
+12  import androidx.compose.material.icons.filled.Edit
+13  import androidx.compose.material.icons.filled.Search
+14  import androidx.compose.material3.*
+15  import androidx.compose.runtime.*
+16  import androidx.compose.ui.Alignment
+17  import androidx.compose.ui.Modifier
+18  import androidx.compose.ui.draw.shadow
+19  import androidx.compose.ui.platform.LocalContext
+20  import androidx.compose.ui.res.stringResource
+21  import androidx.compose.ui.text.font.FontWeight
+22  import androidx.compose.ui.unit.dp
+23  import androidx.lifecycle.viewmodel.compose.viewModel
+24  import androidx.navigation.NavController
+25  import com.example.apz_library.ui.LanguageManager
+26  import com.example.apz_library.ui.books.BooksViewModel
+27  import com.example.apz_library.ui.theme.Brown20
+28  import com.example.apz_library.ui.theme.Brown80
+29  
+30  @OptIn(ExperimentalMaterial3Api::class)
+31  @Composable
+32  fun BooksScreen(
+33      token: String,
+34      navController: NavController
+35  ) {
+36      val viewModel: BooksViewModel = viewModel()
+37      val books by viewModel.books.collectAsState()
+38      val error by viewModel.error.collectAsState()
+39      val context = LocalContext.current
+40  
+41      var searchTitle by remember { mutableStateOf("") }
+42      var searchPublish by remember { mutableStateOf("") }
+43      var searchCategory by remember { mutableStateOf("") }
+44      var showSearch by remember { mutableStateOf(false) }
+45      var deletingBookId by remember { mutableStateOf<Int?>(null) }
+46      var showLanguageMenu by remember { mutableStateOf(false) }
+47  
+48      LaunchedEffect(Unit) {
+49          viewModel.loadBooks(token)
+50      }
+51  
+52      Scaffold(
+53          topBar = {
+54              TopAppBar(
+55                  title = { Text(stringResource(R.string.books_list)) },
+56                  actions = {
+57                      Box {
+58                          IconButton(onClick = { showLanguageMenu = true }) {
+59                              Text(
+60                                  text = if (LanguageManager.currentLanguage == "uk") "UA" else "EN",
+61                                  style = MaterialTheme.typography.titleMedium
+62                              )
+63                          }
+64                          DropdownMenu(
+65                              expanded = showLanguageMenu,
+66                              onDismissRequest = { showLanguageMenu = false }
+67                          ) {
+68                              DropdownMenuItem(
+69                                  text = { Text(stringResource(R.string.ukrainian)) },
+70                                  onClick = {
+71                                      LanguageManager.setLanguage(context, "uk")
+72                                      showLanguageMenu = false
+73                                  }
+74                              )
+75                              DropdownMenuItem(
+76                                  text = { Text(stringResource(R.string.english)) },
+77                                  onClick = {
+78                                      LanguageManager.setLanguage(context, "en")
+79                                      showLanguageMenu = false
+80                                  }
+81                              )
+82                          }
+83                      }
+84                      IconButton(onClick = { navController.navigate("addBook") }) {
+85                          Icon(
+86                              imageVector = Icons.Default.Add,
+87                              contentDescription = stringResource(R.string.add_book)
+88                          )
+89                      }
+90                      IconButton(onClick = { showSearch = !showSearch }) {
+91                          Icon(
+92                              imageVector = Icons.Default.Search,
+93                              contentDescription = stringResource(R.string.search),
+94                              tint = MaterialTheme.colorScheme.primary
+95                          )
+96                      }
+97                  }
+98              )
+99          }
+100     ) { paddingValues ->
+101         Column(
+102             modifier = Modifier
+103                 .fillMaxSize()
+104                 .background(MaterialTheme.colorScheme.background)
+105                 .padding(horizontal = 12.dp, vertical = 8.dp)
+106                 .padding(paddingValues)
+107         ) {
+108             AnimatedVisibility(visible = showSearch) {
+109                 Card(
+110                     modifier = Modifier
+111                         .fillMaxWidth()
+112                         .padding(bottom = 12.dp),
+113                     shape = RoundedCornerShape(20.dp),
+114                     elevation = CardDefaults.cardElevation(8.dp),
+115                     colors = CardDefaults.cardColors(containerColor = Brown20)
+116                 ) {
+117                     Column(Modifier.padding(16.dp)) {
+118                         OutlinedTextField(
+119                             value = searchTitle,
+120                             onValueChange = { searchTitle = it },
+121                             label = { Text(stringResource(R.string.search_by_title)) },
+122                             modifier = Modifier.fillMaxWidth(),
+123                             shape = RoundedCornerShape(12.dp)
+124                         )
+125                         Spacer(Modifier.height(8.dp))
+126                         OutlinedTextField(
+127                             value = searchPublish,
+128                             onValueChange = { searchPublish = it },
+129                             label = { Text(stringResource(R.string.search_by_publisher)) },
+130                             modifier = Modifier.fillMaxWidth(),
+131                             shape = RoundedCornerShape(12.dp)
+132                         )
+133                         Spacer(Modifier.height(8.dp))
+134                         OutlinedTextField(
+135                             value = searchCategory,
+136                             onValueChange = { searchCategory = it },
+137                             label = { Text(stringResource(R.string.category_id)) },
+138                             modifier = Modifier.fillMaxWidth(),
+139                             shape = RoundedCornerShape(12.dp)
+140                         )
+141                         Spacer(Modifier.height(12.dp))
+142                         Button(
+143                             onClick = {
+144                                 val categoryId = searchCategory.toIntOrNull()
+145                                 viewModel.searchBooks(
+146                                     token = token,
+147                                     title = searchTitle.ifBlank { null },
+148                                     publish = searchPublish.ifBlank { null },
+149                                     categoryId = categoryId
+150                                 )
+151                             },
+152                             modifier = Modifier.align(Alignment.End),
+153                             shape = RoundedCornerShape(12.dp),
+154                             colors = ButtonDefaults.buttonColors(
+155                                 containerColor = MaterialTheme.colorScheme.primary,
+156                                 contentColor = MaterialTheme.colorScheme.onPrimary
+157                             )
+158                         ) {
+159                             Text(stringResource(R.string.find))
+160                         }
+161                     }
+162                 }
+163             }
+164  
+165             Spacer(modifier = Modifier.height(8.dp))
+166  
+167             if (error != null) {
+168                 Text(
+169                     "Error: $error",
+170                     color = MaterialTheme.colorScheme.error,
+171                     modifier = Modifier.padding(bottom = 8.dp)
+172                 )
+173             }
+174  
+175             if (books.isEmpty() && error == null) {
+176                 Box(
+177                     Modifier
+178                         .fillMaxSize()
+179                         .padding(top = 32.dp),
+180                     contentAlignment = Alignment.TopCenter
+181                 ) {
+182                     Text(
+183                         stringResource(R.string.no_books_found),
+184                         color = MaterialTheme.colorScheme.onSurfaceVariant
+185                     )
+186                 }
+187             } else {
+188                 LazyColumn(
+189                     modifier = Modifier
+190                         .fillMaxSize()
+191                         .padding(bottom = 8.dp)
+192                 ) {
+193                     items(books) { book ->
+194                         Card(
+195                             modifier = Modifier
+196                                 .fillMaxWidth()
+197                                 .padding(vertical = 6.dp)
+198                                 .shadow(2.dp, RoundedCornerShape(16.dp)),
+199                             shape = RoundedCornerShape(16.dp),
+200                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+201                         ) {
+202                             Column(
+203                                 modifier = Modifier
+204                                     .padding(16.dp)
+205                             ) {
+206                                 Row(
+207                                     verticalAlignment = Alignment.CenterVertically,
+208                                     modifier = Modifier.fillMaxWidth()
+209                                 ) {
+210                                     Text(
+211                                         "${stringResource(R.string.title)}: ${book.title}",
+212                                         style = MaterialTheme.typography.titleMedium,
+213                                         fontWeight = FontWeight.SemiBold,
+214                                         color = MaterialTheme.colorScheme.primary,
+215                                         modifier = Modifier.weight(1f)
+216                                     )
+217                                     IconButton(
+218                                         onClick = {
+219                                             navController.navigate("editBook/${book.bookId}")
+220                                         }
+221                                     ) {
+222                                         Icon(
+223                                             imageVector = Icons.Default.Edit,
+224                                             contentDescription = stringResource(R.string.edit),
+225                                             tint = MaterialTheme.colorScheme.primary
+226                                         )
+227                                     }
+228                                     IconButton(
+229                                         onClick = {
+230                                             deletingBookId = book.bookId
+231                                             viewModel.deleteBook(token, book.bookId) { success ->
+232                                                 deletingBookId = null
+233                                             }
+234                                         }
+235                                     ) {
+236                                         Icon(
+237                                             imageVector = Icons.Default.Delete,
+238                                             contentDescription = stringResource(R.string.delete),
+239                                             tint = MaterialTheme.colorScheme.error
+240                                         )
+241                                     }
+242                                 }
+243                              Spacer(Modifier.height(4.dp))
+244               Text("${stringResource(R.string.isbn)}: ${book.isbn ?: "-"}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+245               Text("${stringResource(R.string.pages)}: ${book.pages ?: "-"}", color = MaterialTheme.colorScheme.onSurfaceVariant)
+246           Text(
+247 "${stringResource(R.string.available)}: ${book.availableItemsCount ?: "-"} ${stringResource(R.string.of)} ${book.itemsCount ?: "-"}",
+248                                     color = Brown80
+249                                 )
+250                             }
+251                         }
+252                     }
+253                 }
+254             }
+255         }
+256     }
+257 }
+2
+
+
