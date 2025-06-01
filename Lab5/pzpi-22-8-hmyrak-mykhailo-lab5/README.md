@@ -99,21 +99,17 @@ npm run build
 
 Після налаштування всіх компонентів система буде готова до використання. Користувачі зможуть авторизуватися через веб-інтерфейс або мобільний додаток, отримуючи доступ до відповідних функцій відповідно до їх ролей (адміністратор, бібліотекар, читач).
 
-## 1. BooksController API
-### Маршрути
----
-
-#### Add Book
-```http
+1. BooksController API
+Маршрути
+Add Book
 ```http
 POST '/api/books/admin/{userId}/add'
 ```
-```
 Опис: Додає нову книгу від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
-**Body:**
+Body:
 title (String): Назва книги.
 author (String): Автор книги.
 categoryID (Long): Ідентифікатор категорії.
@@ -125,46 +121,34 @@ status (String): Статус доступності.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Адміністратора не знайдено.
----
-
-#### Get Book By ID
-```http
+Get Book By ID
 ```http
 GET '/api/books/{bookID}'
 ```
-```
 Опис: Отримує книгу за її унікальним ідентифікатором.
 Параметри запиту:
-**Path:**
+Path:
 bookID (Long): Ідентифікатор книги.
 Відповідь:
 200 OK: Книга знайдена.
 404 Not Found: Книга не знайдена.
----
-
-#### Get All Books
-```http
+Get All Books
 ```http
 GET '/api/books'
-```
 ```
 Опис: Отримує всі книги.
 Відповідь:
 200 OK: Список всіх книг.
----
-
-#### Update Book
-```http
+Update Book
 ```http
 PUT '/api/books/admin/{userId}/{bookID}'
 ```
-```
 Опис: Оновлює дані книги від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 bookID (Long): Ідентифікатор книги.
-**Body:**
+Body:
 title (String): Назва книги.
 author (String): Автор книги.
 categoryID (Long): Ідентифікатор категорії.
@@ -176,38 +160,30 @@ status (String): Статус доступності.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Книга не знайдена.
----
-
-#### Delete Book
-```http
+Delete Book
 ```http
 DELETE '/api/books/admin/{userId}/{bookID}'
 ```
-```
 Опис: Видаляє книгу від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 bookID (Long): Ідентифікатор книги.
 Відповідь:
 204 No Content: Книга видалена.
 404 Not Found: Книга не знайдена.
 
-## 2. ReadersController API
-### Маршрути
----
-
-#### Add Reader
-```http
+2. ReadersController API
+Маршрути
+Add Reader
 ```http
 POST '/api/readers/admin/{userId}/add'
 ```
-```
 Опис: Додає нового читача від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
-**Body:**
+Body:
 firstName (String): Ім'я читача.
 lastName (String): Прізвище читача.
 email (String): Електронна пошта читача.
@@ -217,46 +193,34 @@ phone (String): Номер телефону читача.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Адміністратора не знайдено.
----
-
-#### Get Reader By ID
-```http
+Get Reader By ID
 ```http
 GET '/api/readers/{readerID}'
 ```
-```
 Опис: Отримує читача за його ідентифікатором.
 Параметри запиту:
-**Path:**
+Path:
 readerID (Long): Ідентифікатор читача.
 Відповідь:
 200 OK: Читач знайдений.
 404 Not Found: Читач не знайдений.
----
-
-#### Get All Readers
-```http
+Get All Readers
 ```http
 GET '/api/readers'
-```
 ```
 Опис: Отримує список всіх читачів.
 Відповідь:
 200 OK: Список всіх читачів.
----
-
-#### Update Reader
-```http
+Update Reader
 ```http
 PUT '/api/readers/admin/{userId}/{readerID}'
 ```
-```
 Опис: Оновлює дані читача від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 readerID (Long): Ідентифікатор читача.
-**Body:**
+Body:
 firstName (String): Ім'я читача.
 lastName (String): Прізвище читача.
 email (String): Електронна пошта.
@@ -266,38 +230,30 @@ phone (String): Номер телефону.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Читач не знайдений.
----
-
-#### Delete Reader
-```http
+Delete Reader
 ```http
 DELETE '/api/readers/admin/{userId}/{readerID}'
 ```
-```
 Опис: Видаляє читача від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 readerID (Long): Ідентифікатор читача.
 Відповідь:
 204 No Content: Читач видалений.
 404 Not Found: Читач не знайдений.
 
-## 3 ItemsController API
-### Маршрути
----
-
-#### Add Item
-```http
+3 ItemsController API
+Маршрути
+Add Item
 ```http
 POST '/api/items/admin/{userId}/add'
 ```
-```
 Опис: Додає новий екземпляр книги.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
-**Body:**
+Body:
 bookId (Long): Ідентифікатор книги.
 statusId (Long): Ідентифікатор статусу книги.
 barcode (String): Штрих-код екземпляра книги.
@@ -308,46 +264,34 @@ dateAdded (Date): Дата додавання екземпляра.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Книга або статус не знайдені.
----
-
-#### Get Item By ID
-```http
+Get Item By ID
 ```http
 GET '/api/items/{itemID}'
 ```
-```
 Опис: Отримує екземпляр книги за його ідентифікатором.
 Параметри запиту:
-**Path:**
+Path:
 itemID (Long): Ідентифікатор екземпляра.
 Відповідь:
 200 OK: Екземпляр знайдений.
 404 Not Found: Екземпляр не знайдений.
----
-
-#### Get All Items
-```http
+Get All Items
 ```http
 GET '/api/items'
-```
 ```
 Опис: Отримує список всіх екземплярів книг.
 Відповідь:
 200 OK: Список всіх екземплярів книг.
----
-
-#### Update Item
-```http
+Update Item
 ```http
 PUT '/api/items/admin/{userId}/{itemID}'
 ```
-```
 Опис: Оновлює екземпляр книги від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 itemID (Long): Ідентифікатор екземпляра.
-**Body:**
+Body:
 statusId (Long): Ідентифікатор нового статусу книги.
 location (String): Оновлене місцезнаходження книги.
 Відповідь:
@@ -355,38 +299,30 @@ location (String): Оновлене місцезнаходження книги.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Екземпляр або статус не знайдені.
----
-
-#### Delete Item
-```http
+Delete Item
 ```http
 DELETE '/api/items/admin/{userId}/{itemID}'
 ```
-```
 Опис: Видаляє екземпляр книги від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 itemID (Long): Ідентифікатор екземпляра.
 Відповідь:
 204 No Content: Екземпляр видалено.
 404 Not Found: Екземпляр не знайдений.
 
-## 4. CategoriesController API
-### Маршрути
----
-
-#### Add Category
-```http
+4. CategoriesController API
+Маршрути
+Add Category
 ```http
 POST '/api/categories/admin/{userId}/add'
 ```
-```
 Опис: Додає нову категорію від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
-**Body:**
+Body:
 name (String): Назва категорії.
 description (String): Опис категорії.
 Відповідь:
@@ -394,46 +330,34 @@ description (String): Опис категорії.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Адміністратора не знайдено.
----
-
-#### Get Category By ID
-```http
+Get Category By ID
 ```http
 GET '/api/categories/{categoryID}'
 ```
-```
 Опис: Отримує категорію за її ідентифікатором.
 Параметри запиту:
-**Path:**
+Path:
 categoryID (Long): Ідентифікатор категорії.
 Відповідь:
 200 OK: Категорія знайдена.
 404 Not Found: Категорія не знайдена.
----
-
-#### Get All Categories
-```http
+Get All Categories
 ```http
 GET '/api/categories'
-```
 ```
 Опис: Отримує список всіх категорій.
 Відповідь:
 200 OK: Список всіх категорій.
----
-
-#### Update Category
-```http
+Update Category
 ```http
 PUT '/api/categories/admin/{userId}/{categoryID}'
 ```
-```
 Опис: Оновлює дані категорії від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 categoryID (Long): Ідентифікатор категорії.
-**Body:**
+Body:
 name (String): Назва категорії.
 description (String): Опис категорії.
 Відповідь:
@@ -441,38 +365,30 @@ description (String): Опис категорії.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Категорія не знайдена.
----
-
-#### Delete Category
-```http
+Delete Category
 ```http
 DELETE '/api/categories/admin/{userId}/{categoryID}'
 ```
-```
 Опис: Видаляє категорію від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 categoryID (Long): Ідентифікатор категорії.
 Відповідь:
 204 No Content: Категорія видалена.
 404 Not Found: Категорія не знайдена.
 
-## 5. StatusesController API
-### Маршрути
----
-
-#### Add Status
-```http
+5. StatusesController API
+Маршрути
+Add Status
 ```http
 POST '/api/statuses/admin/{userId}/add'
 ```
-```
 Опис: Додає новий статус книги від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
-**Body:**
+Body:
 statusName (String): Назва статусу.
 description (String): Опис статусу.
 Відповідь:
@@ -480,46 +396,34 @@ description (String): Опис статусу.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Адміністратора не знайдено.
----
-
-#### Get Status By ID
-```http
+Get Status By ID
 ```http
 GET '/api/statuses/{statusID}'
 ```
-```
 Опис: Отримує статус за його ідентифікатором.
 Параметри запиту:
-**Path:**
+Path:
 statusID (Long): Ідентифікатор статусу.
 Відповідь:
 200 OK: Статус знайдений.
 404 Not Found: Статус не знайдений.
----
-
-#### Get All Statuses
-```http
+Get All Statuses
 ```http
 GET '/api/statuses'
-```
 ```
 Опис: Отримує список всіх статусів.
 Відповідь:
 200 OK: Список всіх статусів.
----
-
-#### Update Status
-```http
+Update Status
 ```http
 PUT '/api/statuses/admin/{userId}/{statusID}'
 ```
-```
 Опис: Оновлює статус книги від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 statusID (Long): Ідентифікатор статусу.
-**Body:**
+Body:
 statusName (String): Назва статусу.
 description (String): Опис статусу.
 Відповідь:
@@ -527,36 +431,28 @@ description (String): Опис статусу.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Статус не знайдений.
----
-
-#### Delete Status
-```http
+Delete Status
 ```http
 DELETE '/api/statuses/admin/{userId}/{statusID}'
 ```
-```
 Опис: Видаляє статус книги від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 statusID (Long): Ідентифікатор статусу.
 Відповідь:
 204 No Content: Статус видалений.
 404 Not Found: Статус не знайдений.
 
-## 6. UsersController API
-### Маршрути
----
-
-#### Register User
-```http
+6. UsersController API
+Маршрути
+Register User
 ```http
 POST '/api/users/register'
 ```
-```
 Опис: Реєструє нового користувача.
 Параметри запиту:
-**Body:**
+Body:
 username (String): Ім'я користувача.
 email (String): Електронна пошта користувача.
 password (String): Пароль користувача.
@@ -565,63 +461,47 @@ role (String): Роль користувача (наприклад, "admin", "re
 200 OK: Користувач успішно зареєстрований.
 400 Bad Request: Помилка у вхідних даних.
 409 Conflict: Користувач з таким іменем або email вже існує.
----
-
-#### Login User
-```http
+Login User
 ```http
 POST '/api/users/login'
 ```
-```
 Опис: Авторизує користувача.
 Параметри запиту:
-**Body:**
+Body:
 username (String): Ім'я користувача.
 password (String): Пароль користувача.
 Відповідь:
 200 OK: Авторизація успішна.
 400 Bad Request: Помилка у вхідних даних.
 401 Unauthorized: Невірний логін чи пароль.
----
-
-#### Get User By ID
-```http
+Get User By ID
 ```http
 GET '/api/users/{userID}'
 ```
-```
 Опис: Отримує користувача за його ідентифікатором.
 Параметри запиту:
-**Path:**
+Path:
 userID (Long): Ідентифікатор користувача.
 Відповідь:
 200 OK: Користувач знайдений.
 404 Not Found: Користувач не знайдений.
----
-
-#### Get All Users
-```http
+Get All Users
 ```http
 GET '/api/users'
-```
 ```
 Опис: Отримує список всіх користувачів.
 Відповідь:
 200 OK: Список всіх користувачів.
----
-
-#### Update User
-```http
+Update User
 ```http
 PUT '/api/users/admin/{userId}/{userID}'
 ```
-```
 Опис: Оновлює дані користувача від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 userID (Long): Ідентифікатор користувача.
-**Body:**
+Body:
 username (String): Ім'я користувача.
 email (String): Електронна пошта.
 role (String): Роль користувача.
@@ -630,38 +510,30 @@ role (String): Роль користувача.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Користувач не знайдений.
----
-
-#### Delete User
-```http
+Delete User
 ```http
 DELETE '/api/users/admin/{userId}/{userID}'
 ```
-```
 Опис: Видаляє користувача від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 userID (Long): Ідентифікатор користувача.
 Відповідь:
 204 No Content: Користувач видалений.
 404 Not Found: Користувач не знайдений.
 
-## 8. HistController API
-### Маршрути
----
-
-#### Add History Record
-```http
+8. HistController API
+Маршрути
+Add History Record
 ```http
 POST '/api/hist/admin/{userId}/add'
 ```
-```
 Опис: Додає запис історії видачі книги.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
-**Body:**
+Body:
 readerId (Long): Ідентифікатор читача.
 itemId (Long): Ідентифікатор екземпляра книги.
 borrowDate (Date): Дата видачі книги.
@@ -671,84 +543,64 @@ returnDate (Date): Дата повернення книги.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Читач або екземпляр не знайдені.
----
-
-#### Get History By ID
-```http
+Get History By ID
 ```http
 GET '/api/hist/{histID}'
 ```
-```
 Опис: Отримує запис історії видачі книги за його ідентифікатором.
 Параметри запиту:
-**Path:**
+Path:
 histID (Long): Ідентифікатор запису.
 Відповідь:
 200 OK: Запис знайдений.
 404 Not Found: Запис не знайдений.
----
-
-#### Get All History
-```http
+Get All History
 ```http
 GET '/api/hist'
-```
 ```
 Опис: Отримує всі записи історії видачі книг.
 Відповідь:
 200 OK: Список всіх записів.
----
-
-#### Update History Record
-```http
+Update History Record
 ```http
 PUT '/api/hist/admin/{userId}/{histID}'
 ```
-```
 Опис: Оновлює запис історії видачі книги від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 histID (Long): Ідентифікатор запису.
-**Body:**
+Body:
 returnDate (Date): Оновлена дата повернення книги.
 Відповідь:
 200 OK: Запис оновлений.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Запис не знайдений.
----
-
-#### Delete History Record
-```http
+Delete History Record
 ```http
 DELETE '/api/hist/admin/{userId}/{histID}'
 ```
-```
 Опис: Видаляє запис історії видачі книги від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 histID (Long): Ідентифікатор запису.
 Відповідь:
 204 No Content: Запис видалено.
 404 Not Found: Запис не знайдений.
 
-## 9. PersonsController API
-### Маршрути
----
-
-#### Add Person
-```http
+9. PersonsController API
+Маршрути
+Add Person
 ```http
 POST '/api/persons/admin/{userId}/add'
 ```
-```
 Опис: Додає нову особу.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
-**Body:**
+Body:
 firstName (String): Ім'я.
 lastName (String): Прізвище.
 dateOfBirth (Date): Дата народження.
@@ -759,46 +611,34 @@ email (String): Електронна пошта.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Адміністратора не знайдено.
----
-
-#### Get Person By ID
-```http
+Get Person By ID
 ```http
 GET '/api/persons/{personID}'
 ```
-```
 Опис: Отримує особу за її ідентифікатором.
 Параметри запиту:
-**Path:**
+Path:
 personID (Long): Ідентифікатор особи.
 Відповідь:
 200 OK: Особа знайдена.
 404 Not Found: Особа не знайдена.
----
-
-#### Get All Persons
-```http
+Get All Persons
 ```http
 GET '/api/persons'
-```
 ```
 Опис: Отримує список всіх осіб.
 Відповідь:
 200 OK: Список всіх осіб.
----
-
-#### Update Person
-```http
+Update Person
 ```http
 PUT '/api/persons/admin/{userId}/{personID}'
 ```
-```
 Опис: Оновлює дані особи від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 personID (Long): Ідентифікатор особи.
-**Body:**
+Body:
 firstName (String): Оновлене ім'я.
 lastName (String): Оновлене прізвище.
 dateOfBirth (Date): Оновлена дата народження.
@@ -809,37 +649,29 @@ email (String): Оновлена електронна пошта.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Особа не знайдена.
----
-
-#### Delete Person
-```http
+Delete Person
 ```http
 DELETE '/api/persons/admin/{userId}/{personID}'
 ```
-```
 Опис: Видаляє особу від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 personID (Long): Ідентифікатор особи.
 Відповідь:
 204 No Content: Особа видалена.
 404 Not Found: Особа не знайдена.
-## RolesController API
-### Маршрути
----
-
-#### Add Role
-```http
+RolesController API
+Маршрути
+Add Role
 ```http
 POST '/api/roles/admin/{userId}/add'
 ```
-```
 Опис: Додає нову роль користувача.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
-**Body:**
+Body:
 roleName (String): Назва ролі.
 description (String): Опис ролі.
 Відповідь:
@@ -847,46 +679,34 @@ description (String): Опис ролі.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Адміністратора не знайдено.
----
-
-#### Get Role By ID
-```http
+Get Role By ID
 ```http
 GET '/api/roles/{roleID}'
 ```
-```
 Опис: Отримує роль за її ідентифікатором.
 Параметри запиту:
-**Path:**
+Path:
 roleID (Long): Ідентифікатор ролі.
 Відповідь:
 200 OK: Роль знайдена.
 404 Not Found: Роль не знайдена.
----
-
-#### Get All Roles
-```http
+Get All Roles
 ```http
 GET '/api/roles'
-```
 ```
 Опис: Отримує список всіх ролей.
 Відповідь:
 200 OK: Список всіх ролей.
----
-
-#### Update Role
-```http
+Update Role
 ```http
 PUT '/api/roles/admin/{userId}/{roleID}'
 ```
-```
 Опис: Оновлює роль користувача від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 roleID (Long): Ідентифікатор ролі.
-**Body:**
+Body:
 roleName (String): Оновлена назва ролі.
 description (String): Оновлений опис ролі.
 Відповідь:
@@ -894,17 +714,13 @@ description (String): Оновлений опис ролі.
 400 Bad Request: Помилка у вхідних даних.
 403 Forbidden: Відсутність дозволу на виконання дії.
 404 Not Found: Роль не знайдена.
----
-
-#### Delete Role
-```http
+Delete Role
 ```http
 DELETE '/api/roles/admin/{userId}/{roleID}'
 ```
-```
 Опис: Видаляє роль користувача від імені адміністратора.
 Параметри запиту:
-**Path:**
+Path:
 userId (Long): Ідентифікатор адміністратора.
 roleID (Long): Ідентифікатор ролі.
 Відповідь:
